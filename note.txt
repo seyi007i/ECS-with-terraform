@@ -1,0 +1,9 @@
+Name	Value (example)
+AWS_ACCESS_KEY_ID	IAM access key with ECS, ECR, and EC2 permissions
+AWS_SECRET_ACCESS_KEY	IAM secret
+AWS_REGION	us-east-1 or your region
+ECR_REPOSITORY	my-backend
+ECS_CLUSTER_NAME	backend-cluster
+ECS_SERVICE_NAME	backend-service
+ECS_TASK_DEFINITION_FAMILY	backend-task
+CONTAINER_NAME	backend-app (must match task definition's container name)
