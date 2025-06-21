@@ -75,7 +75,7 @@ module "ecs_backend" {
   name_prefix        = "backend"
   ecs_cluster_name   = "backend-cluster"
   instance_type      = "t3.micro"
-  private_subnet_ids =  module.subnet.private_subnets_backend  # [var.private_subnets_backend["private_subnet_backend_1"].id, var.private_subnets_backend["private_subnet_backend_2"].id]
+  private_subnet_ids =  module.subnet.private_subnet_ids # [var.private_subnets_backend["private_subnet_backend_1"].id, var.private_subnets_backend["private_subnet_backend_2"].id]
   ecs_sg_id          =  module.sgs.backend_sg_id    # var.private_subnets_backend_sg
 
   desired_capacity = 2
