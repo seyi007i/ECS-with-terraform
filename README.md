@@ -1,8 +1,8 @@
-# Terraform Network Infrastructure Deployment
+# Terraform Network Infrastructure and ECS Deployment
 
 ## Description
 
-This document outlines the process of deploying network infrastructure using Terraform.  Terraform is an Infrastructure as Code (IaC) tool that allows you to define and provision infrastructure in a declarative way.  The advantage of deploying infrastructure with Terraform include:
+This document outlines the process of deploying network infrastructure and ecs using Terraform. The code also includes a github action script to deploy the image to ECR. Terraform is an Infrastructure as Code (IaC) tool that allows you to define and provision infrastructure in a declarative way.  The advantage of deploying infrastructure with Terraform include:
 
 * **Automation:** Terraform automates the provisioning process, reducing manual errors and increasing efficiency.
 * **Version Control:** Terraform configurations can be version-controlled, enabling collaboration, tracking changes, and easy rollbacks.
@@ -28,9 +28,11 @@ II. **Terraform Knowledge**
 
 The following steps detail how to deploy and tear down network infrastructure using Terraform:
 
-1.  **`terraform init`**:  Initializes the Terraform working directory. This command downloads the necessary provider plugins (e.g., the AWS provider) and sets up the backend for storing the Terraform state.
+1.  **`run github action`**:  Create the required secrets variable as listed in the note and manually run the github action.
 
-2.  **`terraform plan`**:  Creates an execution plan.  Terraform compares the desired state (defined in your configuration files) with the current state of your infrastructure (stored in the state file) and determines the changes that need to be made.  The plan shows you exactly what Terraform will do before it does it.
+2.  **`terraform init`**:  Initializes the Terraform working directory. This command downloads the necessary provider plugins (e.g., the AWS provider) and sets up the backend for storing the Terraform state.
+
+3.  **`terraform plan`**:  Creates an execution plan.  Terraform compares the desired state (defined in your configuration files) with the current state of your infrastructure (stored in the state file) and determines the changes that need to be made.  The plan shows you exactly what Terraform will do before it does it.
 
 3.  **`terraform apply`**:  Applies the changes described in the execution plan.  Terraform provisions or modifies the network infrastructure resources in your AWS account to match the configuration.
 
@@ -40,4 +42,4 @@ The following steps detail how to deploy and tear down network infrastructure us
 
 ## Verification
 
-navigate snapshots folder to xheck network pings  and access
+navigate snapshots folder to check network pings, access, image and app.
