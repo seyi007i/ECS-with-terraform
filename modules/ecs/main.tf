@@ -107,6 +107,28 @@ resource "aws_ecs_task_definition" "app" {
   ])
 }
 
+#resource "aws_ecs_service" "app_service" {
+ # name            = "${var.name_prefix}-service"
+#  cluster         = aws_ecs_cluster.this.id
+#  task_definition = aws_ecs_task_definition.app.arn
+#  desired_count   = var.desired_count
+ # launch_type     = "EC2"
+
+
+  # Attach to ALB target group
+  #dynamic "load_balancer" {
+  #  for_each = var.target_group_arn != "" ? [1] : []
+  #  content {
+  #    target_group_arn = var.target_group_arn
+  #    container_name   = var.container_name
+  #    container_port   = var.container_port
+  #  }
+  #}
+
+ # depends_on = [aws_autoscaling_group.ecs_asg]
+#}
+
+# ECS Service updated to use ALB
 resource "aws_ecs_service" "app_service" {
   name            = "${var.name_prefix}-service"
   cluster         = aws_ecs_cluster.this.id
@@ -114,5 +136,14 @@ resource "aws_ecs_service" "app_service" {
   desired_count   = var.desired_count
   launch_type     = "EC2"
 
-  depends_on = [aws_autoscaling_group.ecs_asg]
+  load_balancer {
+    target_group_arn = var.alb_target_group_arn
+    container_name   = var.container_name
+    container_port   = var.container_port
+  }
+
+  depends_on = [
+    aws_autoscaling_group.ecs_asg,
+    var.alb_listener_arn
+  ]
 }

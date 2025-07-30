@@ -20,3 +20,23 @@ variable "tf_tag" {
     description = "Terraform identifier"
   
 }
+
+variable "name_prefix" {
+  description = "Prefix to use for naming resources"
+  type        = string
+}
+
+variable "container_port" {
+  type        = number
+  description = "Port your app is listening on"
+}
+
+#variable "ecs_sg_id" {
+ # type        = string
+#  description = "Security group ID of ECS instances"
+#}
+
+variable "alb_sg_id" {
+  type        = string
+  description = "Security group ID of the ALB"
+}

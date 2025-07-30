@@ -29,7 +29,6 @@ module "route_tables" {
   vpc_cidr = module.vpc.vpc_cidr  
   public_subnets_frontend = module.subnet.public_subnets_frontend
   private_subnets_backend = module.subnet.private_subnets_backend
-  private_subnets_database = module.subnet.private_subnets_database
   internet_gateway_id = module.gateways.internet_gateway_id
   nat_gateway_id = module.gateways.nat_gateway_id
 
@@ -46,6 +45,12 @@ module "sgs" {
   public_subnets_frontend = module.subnet.public_subnets_frontend
   private_subnets_backend = module.subnet.private_subnets_backend
   
+  name_prefix         = "backend"
+  container_port      = 8080
+  alb_sg_id           = module.alb.alb_sg_id
+  #ecs_sg_id           = module.ecs_backend.ecs_sg_id
+  # trusted_ssh_cidr    = "0.0.0.0/0" # Replace or use variable
+
 }
 
 
@@ -53,19 +58,11 @@ module "sgs" {
 module "ec2" {
   source = "./modules/ec2"
   public_subnets_frontend = module.subnet.public_subnets_frontend
-  private_subnets_backend = module.subnet.private_subnets_backend
-  public_subnets_frontend_sg = module.sgs.frontend_sg_id
-  private_subnets_backend_sg = module.sgs.backend_sg_id
+  //public_subnets_frontend_sg = module.sgs.frontend_sg_id
+ 
+  bastion_sg_id                = module.sgs.bastion_sg_id
   key = module.keys.key
 
-}
-
-
-module "dbs" {
-  source = "./modules/dbs"
-  private_subnets_database = module.subnet.private_subnets_database
-  private_subnets_database_sg = module.sgs.db_sg_id
-  
 }
 
 
@@ -76,7 +73,7 @@ module "ecs_backend" {
   ecs_cluster_name   = "backend-cluster"
   instance_type      = "t3.micro"
   private_subnet_ids =  module.subnet.private_subnet_ids # [var.private_subnets_backend["private_subnet_backend_1"].id, var.private_subnets_backend["private_subnet_backend_2"].id]
-  ecs_sg_id          =  module.sgs.backend_sg_id    # var.private_subnets_backend_sg
+  ecs_sg_id          =  module.sgs.ecs_sg_id   # var.private_subnets_backend_sg
 
   desired_capacity = 2
   min_size         = 1
@@ -84,10 +81,22 @@ module "ecs_backend" {
 
   task_family     = "backend-task"
   container_name  = "backend-app"
-  container_image = "123456789012.dkr.ecr.us-east-1.amazonaws.com/my-backend:latest"
+  container_image = "489794767202.dkr.ecr.us-east-1.amazonaws.com/my-backend:latest"
   container_port  = 8080
   cpu             = "256"
   memory          = "512"
   desired_count   = 1
+  alb_listener_arn = module.alb.listener_arn
+  alb_target_group_arn = module.alb.target_group_arn
+  
 }
 
+module "alb" {
+  source            = "./modules/alb"
+  vpc_id            = module.vpc.vpc_id
+  public_subnets_ids = module.subnet.public_subnets_ids
+  container_port    = 8080
+  name_prefix       = "backend"  
+  container_name    = "backend-app"       
+  desired_count     = 1                      
+}

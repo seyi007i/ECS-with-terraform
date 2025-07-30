@@ -16,9 +16,6 @@ variable "private_subnets_backend" {
   description = "Private subnet backend"
 }
 
-variable "private_subnets_database" {
-  description = "Private subnet database"
-}
 
 
 variable "internet_gateway_id" {
@@ -51,12 +48,6 @@ variable "name_priv_rtb_backend_tag" {
   
 }
 
-variable "name_priv_rtb_database_tag" {
-    type = string
-    default = "3_tier_public_rtb_database"   
-    description = "Public route table database tag"
-  
-}
 
 variable "internet_cidr" {
   description = "internet cidr"

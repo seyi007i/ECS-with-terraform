@@ -2,18 +2,11 @@ variable "public_subnets_frontend" {
   description = "Public subnet frontend"
 }
 
-variable "private_subnets_backend" {
-  description = "Private subnet backend"
+variable "bastion_sg_id" {
+  description = "Security group ID for the Bastion host"
+  type        = string
 }
 
-
-variable "public_subnets_frontend_sg" {
-  description = "Public subnet frontend sg"
-}
-
-variable "private_subnets_backend_sg" {
-  description = "Private subnet backend sg"
-}
 
 
 variable "tf_tag" {
@@ -22,8 +15,6 @@ variable "tf_tag" {
     description = "Terraform identifier"
   
 }
-
-
 
 variable "key" {
   description = "Compute access key"

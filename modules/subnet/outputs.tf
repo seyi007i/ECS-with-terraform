@@ -2,6 +2,11 @@ output "public_subnets_frontend" {
   value = aws_subnet.public_subnets_frontend
 }
 
+output "public_subnets_ids" {
+  value = [for subnet in aws_subnet.public_subnets_frontend : subnet.id]
+}
+
+
 output "private_subnets_backend" {
   value = aws_subnet.private_subnets_backend
 }

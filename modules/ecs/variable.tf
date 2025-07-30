@@ -15,3 +15,19 @@ variable "container_port" {}
 variable "cpu" {}
 variable "memory" {}
 variable "desired_count" {}
+variable "target_group_arn" {
+  default = "" # Optional, use if wiring listener
+}
+
+variable "alb_target_group_arn" {
+  description = "Target group ARN from ALB"
+  type        = string
+}
+
+variable "alb_listener_arn" {
+  type = string
+}
+
+
+
+

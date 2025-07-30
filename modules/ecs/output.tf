@@ -9,3 +9,6 @@ output "ecs_service_name" {
 output "ecs_asg_name" {
   value = aws_autoscaling_group.ecs_asg.name
 }
+
+
+
