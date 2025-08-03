@@ -9,8 +9,8 @@ variable "min_size" {}
 
 # ECS Task Definition
 variable "task_family" {}
-variable "container_name" {}
-variable "container_image" {}
+# variable "container_name" {}
+# variable "container_image" {}
 variable "container_port" {}
 variable "cpu" {}
 variable "memory" {}
@@ -28,6 +28,9 @@ variable "alb_listener_arn" {
   type = string
 }
 
+variable "key" {
+  description = "Compute access key"
+}
 
 
 

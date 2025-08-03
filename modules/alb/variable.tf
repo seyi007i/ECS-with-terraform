@@ -27,3 +27,9 @@ variable "desired_count" {
   description = "Number of ECS tasks to run"
   type        = number
 }
+
+variable "alb_sg_id" {
+  description = ""
+  #type        = string
+}
+

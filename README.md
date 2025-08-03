@@ -1,45 +1,105 @@
-# Terraform Network Infrastructure and ECS Deployment
+# ECS Terraform Deployment
 
-## Description
+This project provisions a complete ECS (Elastic Container Service) infrastructure on AWS using Terraform. It includes VPC, subnets, security groups, an application load balancer (ALB), ECS cluster, and integrates with GitHub Actions for automated deployment of container images to Amazon ECR.
 
-This document outlines the process of deploying network infrastructure and ecs using Terraform. The code also includes a github action script to deploy the image to ECR. Terraform is an Infrastructure as Code (IaC) tool that allows you to define and provision infrastructure in a declarative way.  The advantage of deploying infrastructure with Terraform include:
+## Features
 
-* **Automation:** Terraform automates the provisioning process, reducing manual errors and increasing efficiency.
-* **Version Control:** Terraform configurations can be version-controlled, enabling collaboration, tracking changes, and easy rollbacks.
-* **Reusability:** Infrastructure components can be defined as reusable modules, simplifying complex deployments and ensuring consistency.
-* **Multi-Cloud Support:** Terraform can manage infrastructure across multiple cloud providers (e.g., AWS, Azure, GCP) using a single configuration language.
-* **Planning:** Terraform creates an execution plan before making any changes, allowing you to preview the changes and avoid surprises.
+- **VPC**: Creates a Virtual Private Cloud with public and private subnets.
+- **Subnets**: Provisions public and private subnets across multiple availability zones.
+- **Security Groups**: Configures security groups for ALB, ECS, and other resources.
+- **Application Load Balancer (ALB)**: Provisions an ALB for routing traffic to ECS services.
+- **ECS Cluster**: Deploys an ECS cluster with a service and task definition.
+- **GitHub Actions**: Automates the deployment of container images to Amazon ECR.
 
-## Prerequisite
+## Prerequisites
 
-Before you begin, you need the following:
+- [Terraform](https://www.terraform.io/downloads.html) installed on your local machine.
+- AWS credentials configured (e.g., via `~/.aws/credentials` or environment variables).
+- An existing key pair in AWS for SSH access to EC2 instances.
+- Docker installed for building container images.
 
-I.  **AWS Account**
+## Project Structure
 
-* You will need an active AWS account with appropriate permissions to create and manage network resources (VPCs, subnets, security groups, etc.).
+```
+ECS-with-terraform/
+├── main.tf                # Main Terraform configuration
+├── variables.tf           # Input variables for the project
+├── outputs.tf             # Outputs for the project
+├── modules/
+│   ├── vpc/               # VPC module
+│   ├── subnet/            # Subnet module
+│   ├── alb/               # Application Load Balancer module
+│   ├── ecs/               # ECS module
+│   ├── sgs/               # Security Groups module
+├── .github/
+│   ├── workflows/
+│       ├── deploy.yml     # GitHub Actions workflow for ECR deployment
+```
 
-II. **Terraform Knowledge**
-* Basic understanding of Terraform concepts, configuration syntax (HCL), and CLI commands.  You should be familiar with:
-    * Terraform configuration files (`.tf` files)
-    * Resources, providers, and modules
-    * Terraform CLI commands
+## Usage
 
-## Steps to Deploy
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-repo/ECS-with-terraform.git
+   cd ECS-with-terraform
+   ```
 
-The following steps detail how to deploy and tear down network infrastructure using Terraform:
+2. **Initialize Terraform**:
+   Initialize the Terraform working directory and download the required providers and modules:
+   ```bash
+   terraform init
+   ```
 
-1.  **`run github action`**:  Create the required secrets variable as listed in the note and manually run the github action.
+3. **Plan the Infrastructure**:
+   Review the changes Terraform will make to your AWS account:
+   ```bash
+   terraform plan
+   ```
 
-2.  **`terraform init`**:  Initializes the Terraform working directory. This command downloads the necessary provider plugins (e.g., the AWS provider) and sets up the backend for storing the Terraform state.
+4. **Apply the Configuration**:
+   Deploy the infrastructure:
+   ```bash
+   terraform apply
+   ```
 
-3.  **`terraform plan`**:  Creates an execution plan.  Terraform compares the desired state (defined in your configuration files) with the current state of your infrastructure (stored in the state file) and determines the changes that need to be made.  The plan shows you exactly what Terraform will do before it does it.
+5. **Automated Deployment with GitHub Actions**:
+   - Push your Docker image to ECR using the provided GitHub Actions workflow (`.github/workflows/deploy.yml`).
+   - Ensure your repository secrets are configured with `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION`.
 
-3.  **`terraform apply`**:  Applies the changes described in the execution plan.  Terraform provisions or modifies the network infrastructure resources in your AWS account to match the configuration.
+6. **Destroy the Infrastructure**:
+   To tear down the infrastructure, run:
+   ```bash
+   terraform destroy
+   ```
 
-4.  **`terraform destroy`**:  Tears down the deployed infrastructure.  This command reverses the actions of `terraform apply` and deletes all the resources that were created.  It's important to use this command when you no longer need the infrastructure to avoid incurring unnecessary costs.
+## Inputs
 
+| Variable Name                  | Description                                      | Type         | Default Value                  |
+|--------------------------------|--------------------------------------------------|--------------|--------------------------------|
+| `vpc_id`                       | VPC ID where resources will be deployed         | `string`     | N/A                            |
+| `public_subnets_ids`           | List of public subnet IDs for ALB               | `list(string)` | N/A                          |
+| `container_port`               | Port exposed by the container                   | `number`     | `8080`                         |
+| `name_prefix`                  | Prefix for naming resources                     | `string`     | `"backend"`                    |
+| `desired_count`                | Number of ECS tasks to run                      | `number`     | `1`                            |
 
+## Outputs
 
-## Verification
+| Output Name                    | Description                                      |
+|--------------------------------|--------------------------------------------------|
+| `public_subnets_frontend`      | List of public subnet IDs for frontend           |
+| `private_subnets_backend`      | List of private subnet IDs for backend           |
+| `private_subnets_database`     | List of private subnet IDs for database          |
+| `alb_dns_name`                 | DNS name of the Application Load Balancer        |
 
-navigate snapshots folder to check network pings, access, image and app.
+## Notes
+
+- Ensure that the `vpc_cidr` and subnet CIDRs do not overlap with existing networks in your AWS account.
+- Modify the `variables.tf` file to customize the configuration as per your requirements.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Author
+
+- **Your Name** - [Your GitHub Profile](https://github.com/your-profile)
