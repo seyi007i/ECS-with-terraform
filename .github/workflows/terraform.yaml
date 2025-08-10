@@ -1,9 +1,6 @@
 name: Terraform Deploy to AWS
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 env:
